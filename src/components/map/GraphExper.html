@@ -1,0 +1,504 @@
+<!--工作经验-->
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+	<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.js'></script>
+	<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.css' rel='stylesheet' />
+	<script src="./echarts3Layer/echarts3Extent.js"></script>
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+		}
+
+		#map {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			width: 100%;
+		}
+	</style>
+</head>
+
+<body>
+	<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js">
+	</script>
+	<link rel="stylesheet"
+		href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css"
+		type="text/css">
+	<style>
+		.geocoder {
+			position: absolute;
+			z-index: 1;
+			width: 25%;
+			left: 53%;
+			margin-left: -50%;
+			top: 20px;
+		}
+
+		.mapboxgl-ctrl-geocoder {
+			min-width: 100%;
+		}
+
+		#fit {
+			border: none;
+			border-radius: 2px;
+			height: 30px;
+			width: 30px;
+			text-align: center;
+			color: rgb(0, 0, 0);
+			background: #ffffff;
+			background-image: url('./home.jpg');
+		}
+	</style>
+
+	<div id="thematicMapDiv武汉-经验要求"></div>
+	<div id="thematicMapDiv上海-经验要求"></div>
+	<div id="thematicMapDiv南京-经验要求"></div>
+	<div id="thematicMapDiv杭州-经验要求"></div>
+	<div id="thematicMapDiv苏州-经验要求"></div>
+	<div id="thematicMapDiv常州-经验要求"></div>
+	<div id="thematicMapDiv合肥-经验要求"></div>
+	<div id="thematicMapDiv无锡-经验要求"></div>
+	<div id="thematicMapDiv扬州-经验要求"></div>
+	<div id="thematicMapDiv嘉兴-经验要求"></div>
+	<div id="thematicMapDiv宁波-经验要求"></div>
+	<div id="thematicMapDiv芜湖-经验要求"></div>
+	<div id="thematicMapDiv南通-经验要求"></div>
+	<div id="thematicMapDiv名称"></div>
+	<div id='map'></div>
+	<div id='geocoder' class='geocoder'></div>
+
+	<script>
+		mapboxgl.accessToken = 'pk.eyJ1IjoiY2hlbmpxIiwiYSI6ImNrcWFmdWt2bjBtZGsybmxjb29oYmRzZzEifQ.mnpiwx7_cBEyi8YiJiMRZg';
+		//地图容器
+		var map = new mapboxgl.Map({
+			container: 'map', // container id
+			style: 'mapbox://styles/chenjq/ckwetfomi0j1014ph4s20wu2x', // stylesheet location
+			center: [116.39, 39.9], // starting position [lng, lat]
+			zoom: 3.3 // starting zoom
+		});
+		var nav = new mapboxgl.NavigationControl({
+			"showCompass": true,
+			"showZoom": true
+		});
+		//搜索框
+		var geocoder = new MapboxGeocoder({
+			accessToken: mapboxgl.accessToken,
+			mapboxgl: mapboxgl
+		});
+		document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+		map.addControl(nav, 'top-left');
+		class HomeControl {
+			onAdd(map) {
+				this._map = map;
+				this._container = document.createElement('button');
+				this._container.className = 'mapboxgl-ctrl';
+				this._container.id = "fit"
+				return this._container;
+			}
+			onRemove() {
+				this._container.parentNode.removeChild(this._container);
+				this._map = undefined;
+			}
+		}
+		//home图标位置
+		map.addControl(new HomeControl(), "top-left");
+		map.addControl(new mapboxgl.FullscreenControl(), "top-right");
+		//home 显示的范围
+		document.getElementById('fit').addEventListener('click', () => {
+			map.fitBounds([
+				[130, 50], // 边界的西南角
+				[72, 21] // 边界的东北角
+			]);
+		});
+		/*检查浏览器是否支持全屏*/
+		function checkFullscreenSupport() {
+			return !!(
+				window.document.fullscreenEnabled ||
+				window.document.mozFullScreenEnabled ||
+				window.document.msFullscreenEnabled ||
+				window.document.webkitFullscreenEnabled
+			);
+		}
+
+		//初始化echart表
+		function initEchart(element, options) {
+			var mychart = echarts.init(element);
+			mychart.setOption(options);
+			return mychart;
+		}
+		window.onload = function () {
+			/**
+			 * 数据 */
+			data = [{
+					"id": "wuhan",
+					"名称": "武汉-经验要求",
+					"无需": 70,
+					"在校/应届": 125,
+					"1年": 424,
+					"2年": 479,
+					"3-4年": 675,
+					"5-7年": 223,
+					"8-9年": 18,
+					"10年以上": 4,
+					"GEOJSON": {
+						"type": "Feature",
+						"properties": {},
+						"geometry": {
+							"type": "Point",
+							"coordinates": [
+								114.31158155473231,
+								30.598466736400987
+							]
+						}
+					}
+				},
+				{
+					"id": "shanghai",
+					"名称": "上海-经验要求",
+					"无需": 85,
+					"在校/应届": 40,
+					"1年": 292,
+					"2年": 271,
+					"3-4年": 448,
+					"5-7年": 164,
+					"8-9年": 25,
+					"10年以上": 17,
+					"GEOJSON": {
+						"type": "Feature",
+						"properties": {},
+						"geometry": {
+							"type": "Point",
+							"coordinates": [
+								121.48053886017651,
+								31.235929042252014
+							]
+						}
+					}
+				},
+				{
+					"id": "nanjing",
+					"名称": "南京-经验要求",
+					"无需": 70,
+					"在校/应届": 125,
+					"1年": 424,
+					"2年": 479,
+					"3-4年": 675,
+					"5-7年": 223,
+					"8-9年": 18,
+					"10年以上": 4,
+					"GEOJSON": {
+						"type": "Feature",
+						"properties": {},
+						"geometry": {
+							"type": "Point",
+							"coordinates": [
+								118.80242172124585,
+								32.06465288561847
+							]
+						}
+					}
+				},
+				{
+					"id": "hangzhou",
+					"名称": "杭州-经验要求",
+					"无需": 33,
+					"在校/应届": 26,
+					"1年": 144,
+					"2年": 138,
+					"3-4年": 168,
+					"5-7年": 43,
+					"8-9年": 7,
+					"10年以上":11,
+					"GEOJSON": {
+						"type": "Feature",
+						"properties": {},
+						"geometry": {
+							"type": "Point",
+							"coordinates": [
+								120.21551180372168,
+								30.25308298169347
+							]
+						}
+					}
+				},
+				{
+					"id": "suzhou",
+					"名称": "苏州-经验要求",
+					"无需": 41,
+					"在校/应届": 10,
+					"1年": 105,
+					"2年": 131,
+					"3-4年": 83,
+					"5-7年": 34,
+					"8-9年": 2,
+					"10年以上": 1,
+					"GEOJSON": {
+						"type": "Feature",
+						"properties": {},
+						"geometry": {
+							"type": "Point",
+							"coordinates": [
+								120.59241222959322,
+								31.303564074441766
+							]
+						}
+					}
+				},
+				{
+					"id": "changzhou",
+					"名称": "常州-经验要求",
+					"无需": 1,
+					"在校/应届": 1,
+					"1年": 3,
+					"2年": 25,
+					"3-4年": 16,
+					"5-7年":2,
+					"8-9年": 1,
+					"10年以上": 1,
+					"GEOJSON": {
+						"type": "Feature",
+						"properties": {},
+						"geometry": {
+							"type": "Point",
+							"coordinates": [
+								119.98148471327892,
+								31.815795653327836
+							]
+						}
+					}
+				},
+				{
+					"id": "hefei",
+					"名称": "合肥-经验要求",
+					"无需": 5,
+					"在校/应届": 6,
+					"1年": 38,
+					"2年": 40,
+					"3-4年": 103,
+					"5-7年": 28,
+					"8-9年": 1,
+					"10年以上": 1,
+					"GEOJSON": {
+						"type": "Feature",
+						"properties": {},
+						"geometry": {
+							"type": "Point",
+							"coordinates": [
+								117.23344266497664,
+								31.826577833686887
+							]
+						}
+					}
+				},
+				{
+					"id": "wuxi",
+					"名称": "无锡-经验要求",
+					"无需": 2,
+					"在校/应届": 11,
+					"1年": 25,
+					"2年": 54,
+					"3-4年": 63,
+					"5-7年": 8,
+					"8-9年": 1,
+					"10年以上": 1,
+					"GEOJSON": {
+						"type": "Feature",
+						"properties": {},
+						"geometry": {
+							"type": "Point",
+							"coordinates": [
+								120.31858328810601,
+								31.498809732685714
+							]
+						}
+					}
+				},
+				{
+					"id": "yangzhou",
+					"名称": "扬州-经验要求",
+					"无需": 1,
+					"在校/应届": 1,
+					"1年": 9,
+					"2年": 4,
+					"3-4年": 4,
+					"5-7年": 1,
+					"8-9年": 1,
+					"10年以上": 1,
+					"GEOJSON": {
+						"type": "Feature",
+						"properties": {},
+						"geometry": {
+							"type": "Point",
+							"coordinates": [
+								119.41941890822997,
+								32.40067693609037
+							]
+						}
+					}
+				},
+				{
+					"id": "jiaxing",
+					"名称": "嘉兴-经验要求",
+					"无需": 10,
+					"在校/应届": 8,
+					"1年": 16,
+					"2年": 11,
+					"3-4年": 21,
+					"5-7年": 2,
+					"8-9年": 1,
+					"10年以上": 1,
+					"GEOJSON": {
+						"type": "Feature",
+						"properties": {},
+						"geometry": {
+							"type": "Point",
+							"coordinates": [
+								120.76355182586005,
+								30.750974830920143
+							]
+						}
+					}
+				},
+				{
+					"id": "ningbo",
+					"名称": "宁波-经验要求",
+					"无需": 13,
+					"在校/应届": 8,
+					"1年": 15,
+					"2年": 22,
+					"3-4年": 20,
+					"5-7年": 9,
+					"8-9年": 1,
+					"10年以上": 1,
+					"GEOJSON": {
+						"type": "Feature",
+						"properties": {},
+						"geometry": {
+							"type": "Point",
+							"coordinates": [
+								121.62857249434141,
+								29.866033045866054
+							]
+						}
+					}
+				},
+				{
+					"id": "wuhu",
+					"名称": "芜湖-经验要求",
+					"无需": 3,
+					"在校/应届": 1,
+					"1年": 1,
+					"2年": 3,
+					"3-4年": 4,
+					"5-7年": 5,
+					"8-9年": 1,
+					"10年以上": 1,
+					"GEOJSON": {
+						"type": "Feature",
+						"properties": {},
+						"geometry": {
+							"type": "Point",
+							"coordinates": [
+								118.43943137653523,
+								31.358536655799266
+							]
+						}
+					}
+				},
+				{
+					"id": "nantong",
+					"名称": "南通-经验要求",
+					"无需": 3,
+					"在校/应届": 3,
+					"1年": 22,
+					"2年": 15,
+					"3-4年": 15,
+					"5-7年": 5,
+					"8-9年": 6,
+					"10年以上": 1,
+					"GEOJSON": {
+						"type": "Feature",
+						"properties": {},
+						"geometry": {
+							"type": "Point",
+							"coordinates": [
+								120.90159173866185,
+								31.98654943120089
+							]
+						}
+					}
+				}
+			]
+			window.echartMapPoints = [];
+			window.echartInitLists = [];
+			// 遍历数组
+			data.forEach(item => {
+				/**
+				 * 动态生成html元素 */
+				const htmlDivElement = document.createElement("div");
+				htmlDivElement.style = "height:100px;width:100px;";
+				const geojson = item.GEOJSON;
+				// 使用mapboxgl.Marker 根据经纬度将html元素加载至浏览器指定位置
+				window.echartMapPoints.push(new mapboxgl.Marker(htmlDivElement, {
+						//offset: [-50 / 2, -50 / 2]
+					})
+					.setLngLat([
+						geojson.geometry.coordinates[0],
+						geojson.geometry.coordinates[1]
+					])
+					.addTo(window.map));
+					// 遍历数据，生成每一个饼图
+				const d = Object.keys(item).filter(curr => typeof item[curr] === 'number').map(current => ({
+					name: current,
+					value: item[current]
+				}))
+				const option1 = {
+					tooltip: {
+						trigger: 'item',
+						formatter: '{a} <br/>{b} : {c} ({d}%)'
+					},
+					series: {
+						name: item.名称,
+						type: "pie",
+						data: d,
+						radius: '28px',
+						avoidLabelOverlap: false,
+						label: {
+							normal: {
+								show: false,
+								position: 'center'
+							},
+							emphasis: {
+								show: true,
+								textStyle: {
+									fontSize: '12',
+									fontWeight: 'bold'
+								}
+							}
+						}
+					}
+				};
+				window.echartInitLists.push(initEchart(htmlDivElement, option1));
+			})
+
+		}
+
+		//清除echart及marker
+		function clearEchartInstantAndPoint() {
+			window.echartInitLists.forEach(echartItem => {
+				echartItem.dispose();
+			});
+			window.echartMapPoints.forEach(pointItem => {
+				pointItem.remove();
+			});
+		}
+	</script>
+
+</body>
+
+</html>

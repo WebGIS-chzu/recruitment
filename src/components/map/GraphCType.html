@@ -1,0 +1,526 @@
+<!--公司类型-->
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+	<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.js'></script>
+	<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.css' rel='stylesheet' />
+	<script src="./echarts3Layer/echarts3Extent.js"></script>
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+		}
+
+		#map {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			width: 100%;
+		}
+	</style>
+</head>
+
+<body>
+	<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js">
+	</script>
+	<link rel="stylesheet"
+		href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css"
+		type="text/css">
+	<style>
+		.geocoder {
+			position: absolute;
+			z-index: 1;
+			width: 25%;
+			left: 53%;
+			margin-left: -50%;
+			top: 20px;
+		}
+
+		.mapboxgl-ctrl-bottom-left div {
+			display: none !important;
+		}
+
+		.mapboxgl-ctrl-geocoder {
+			min-width: 100%;
+		}
+
+		#fit {
+			border: none;
+			border-radius: 2px;
+			height: 30px;
+			width: 30px;
+			text-align: center;
+			color: rgb(0, 0, 0);
+			background: #ffffff;
+			background-image: url('./home.jpg');
+		}
+	</style>
+
+	<div id="thematicMapDiv武汉-公司类型占比"></div>
+	<div id="thematicMapDiv上海-公司类型占比"></div>
+	<div id="thematicMapDiv南京-公司类型占比"></div>
+	<div id="thematicMapDiv杭州-公司类型占比"></div>
+	<div id="thematicMapDiv苏州-公司类型占比"></div>
+	<div id="thematicMapDiv常州-公司类型占比"></div>
+	<div id="thematicMapDiv合肥-公司类型占比"></div>
+	<div id="thematicMapDiv无锡-公司类型占比"></div>
+	<div id="thematicMapDiv扬州-公司类型占比"></div>
+	<div id="thematicMapDiv嘉兴-公司类型占比"></div>
+	<div id="thematicMapDiv宁波-公司类型占比"></div>
+	<div id="thematicMapDiv芜湖-公司类型占比"></div>
+	<div id="thematicMapDiv南通-公司类型占比"></div>
+	<div id="thematicMapDiv名称"></div>
+	<div id='map'></div>
+	<div id='geocoder' class='geocoder'></div>
+
+	<script>
+		mapboxgl.accessToken = 'pk.eyJ1IjoiY2hlbmpxIiwiYSI6ImNrcWFmdWt2bjBtZGsybmxjb29oYmRzZzEifQ.mnpiwx7_cBEyi8YiJiMRZg';
+		//地图容器
+		var map = new mapboxgl.Map({
+			container: 'map', // container id
+			style: 'mapbox://styles/chenjq/ckwetfomi0j1014ph4s20wu2x', // stylesheet location
+			center: [116.39, 39.9], // starting position [lng, lat]
+			zoom: 3.5, // starting zoom
+			attributionControl: false
+		});
+
+		var nav = new mapboxgl.NavigationControl({
+			"showCompass": true,
+			"showZoom": true
+		});
+		//搜索框
+		var geocoder = new MapboxGeocoder({
+			accessToken: mapboxgl.accessToken,
+			mapboxgl: mapboxgl
+		});
+		document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+		map.addControl(nav, 'top-left');
+		class HomeControl {
+			onAdd(map) {
+				this._map = map;
+				this._container = document.createElement('button');
+				this._container.className = 'mapboxgl-ctrl';
+				this._container.id = "fit"
+				return this._container;
+			}
+			onRemove() {
+				this._container.parentNode.removeChild(this._container);
+				this._map = undefined;
+			}
+		}
+		//home图标位置
+		map.addControl(new HomeControl(), "top-left");
+		map.addControl(new mapboxgl.FullscreenControl(), "top-right");
+		
+		//home 显示的范围
+		document.getElementById('fit').addEventListener('click', () => {
+			map.fitBounds([
+				[130, 50], // 边界的西南角
+				[72, 21] // 边界的东北角
+			]);
+		});
+		/*检查浏览器是否支持全屏*/
+		function checkFullscreenSupport() {
+			return !!(
+				window.document.fullscreenEnabled ||
+				window.document.mozFullScreenEnabled ||
+				window.document.msFullscreenEnabled ||
+				window.document.webkitFullscreenEnabled
+			);
+		}
+
+		//初始化echart表
+		function initEchart(element, options) {
+			var mychart = echarts.init(element);
+			mychart.setOption(options);
+			return mychart;
+		}
+		window.onload = function () {
+			/**
+			 * 数据 */
+			data = [{
+				"id": "wuhan",
+				"名称": "武汉-公司类型占比",
+				"创业": 0,
+				"非盈利": 4,
+				"民营": 1703,
+				"上市": 263,
+				"事业": 9,
+				"合资": 35,
+				"国企": 115,
+				"外资": 6,
+				"政府": 0,
+				"GEOJSON": {
+					"type": "Feature",
+					"properties": {},
+					"geometry": {
+						"type": "Point",
+						"coordinates": [
+							114.31158155473231,
+							30.598466736400987
+						]
+					}
+				}
+			},
+			{
+				"id": "shanghai",
+				"名称": "上海-公司类型占比",
+				"创业": 13,
+				"非盈利": 2,
+				"民营": 1079,
+				"上市": 144,
+				"事业": 12,
+				"合资": 34,
+				"国企": 82,
+				"外资": 61,
+				"政府": 0,
+				"GEOJSON": {
+					"type": "Feature",
+					"properties": {},
+					"geometry": {
+						"type": "Point",
+						"coordinates": [
+							121.48053886017651,
+							31.235929042252014
+						]
+					}
+				}
+			},
+			{
+				"id": "nanjing",
+				"名称": "南京-公司类型占比",
+				"创业": 6,
+				"非盈利": 0,
+				"民营": 719,
+				"上市": 186,
+				"事业": 4,
+				"合资": 17,
+				"国企": 33,
+				"外资": 22,
+				"政府": 0,
+				"GEOJSON": {
+					"type": "Feature",
+					"properties": {},
+					"geometry": {
+						"type": "Point",
+						"coordinates": [
+							118.80242172124585,
+							32.06465288561847
+						]
+					}
+				}
+			},
+			{
+				"id": "hangzhou",
+				"名称": "杭州-公司类型占比",
+				"创业": 9,
+				"非盈利": 0,
+				"民营": 434,
+				"上市": 64,
+				"事业": 3,
+				"合资": 6,
+				"国企": 72,
+				"外资": 8,
+				"政府": 0,
+				"GEOJSON": {
+					"type": "Feature",
+					"properties": {},
+					"geometry": {
+						"type": "Point",
+						"coordinates": [
+							120.21551180372168,
+							30.25308298169347
+						]
+					}
+				}
+			},
+			{
+				"id": "suzhou",
+				"名称": "苏州-公司类型占比",
+				"创业": 3,
+				"非盈利": 0,
+				"民营": 309,
+				"上市": 16,
+				"事业": 8,
+				"合资": 14,
+				"国企": 41,
+				"外资": 31,
+				"政府": 0,
+				"GEOJSON": {
+					"type": "Feature",
+					"properties": {},
+					"geometry": {
+						"type": "Point",
+						"coordinates": [
+							120.59241222959322,
+							31.303564074441766
+						]
+					}
+				}
+			},
+			{
+				"id": "changzhou",
+				"名称": "常州-公司类型占比",
+				"创业": 0,
+				"非盈利": 0,
+				"民营": 22,
+				"上市": 2,
+				"事业": 1,
+				"合资": 5,
+				"国企": 16,
+				"外资": 0,
+				"政府": 0,
+				"GEOJSON": {
+					"type": "Feature",
+					"properties": {},
+					"geometry": {
+						"type": "Point",
+						"coordinates": [
+							119.98148471327892,
+							31.815795653327836
+						]
+					}
+				}
+			},
+			{
+				"id": "hefei",
+				"名称": "合肥-公司类型占比",
+				"创业": 1,
+				"非盈利": 0,
+				"民营": 161,
+				"上市": 36,
+				"事业": 1,
+				"合资": 2,
+				"国企": 25,
+				"外资": 2,
+				"政府": 0,
+				"GEOJSON": {
+					"type": "Feature",
+					"properties": {},
+					"geometry": {
+						"type": "Point",
+						"coordinates": [
+							117.23344266497664,
+							31.826577833686887
+						]
+					}
+				}
+			},
+			{
+				"id": "wuxi",
+				"名称": "无锡-公司类型占比",
+				"创业": 5,
+				"非盈利": 0,
+				"民营": 83,
+				"上市": 62,
+				"事业": 4,
+				"合资": 5,
+				"国企": 19,
+				"外资": 0,
+				"政府": 0,
+				"GEOJSON": {
+					"type": "Feature",
+					"properties": {},
+					"geometry": {
+						"type": "Point",
+						"coordinates": [
+							120.31858328810601,
+							31.498809732685714
+						]
+					}
+				}
+			},
+			{
+				"id": "yangzhou",
+				"名称": "扬州-公司类型占比",
+				"创业": 0,
+				"非盈利": 0,
+				"民营": 12,
+				"上市": 0,
+				"事业": 3,
+				"合资": 0,
+				"国企": 1,
+				"外资": 0,
+				"政府": 0,
+				"GEOJSON": {
+					"type": "Feature",
+					"properties": {},
+					"geometry": {
+						"type": "Point",
+						"coordinates": [
+							119.41941890822997,
+							32.40067693609037
+						]
+					}
+				}
+			},
+			{
+				"id": "jiaxing",
+				"名称": "嘉兴-公司类型占比",
+				"创业": 0,
+				"非盈利": 0,
+				"民营": 24,
+				"上市": 1,
+				"事业": 8,
+				"合资": 24,
+				"国企": 21,
+				"外资": 2,
+				"政府": 0,
+				"GEOJSON": {
+					"type": "Feature",
+					"properties": {},
+					"geometry": {
+						"type": "Point",
+						"coordinates": [
+							120.76355182586005,
+							30.750974830920143
+						]
+					}
+				}
+			},
+			{
+				"id": "ningbo",
+				"名称": "宁波-公司类型占比",
+				"创业": 1,
+				"非盈利": 0,
+				"民营": 70,
+				"上市": 0,
+				"事业": 3,
+				"合资": 7,
+				"国企": 12,
+				"外资": 1,
+				"政府": 2,
+				"GEOJSON": {
+					"type": "Feature",
+					"properties": {},
+					"geometry": {
+						"type": "Point",
+						"coordinates": [
+							121.62857249434141,
+							29.866033045866054
+						]
+					}
+				}
+			},
+			{
+				"id": "wuhu",
+				"名称": "芜湖-公司类型占比",
+				"创业": 0,
+				"非盈利": 0,
+				"民营": 7,
+				"上市": 7,
+				"事业": 0,
+				"合资": 0,
+				"国企": 5,
+				"外资": 4,
+				"政府": 0,
+				"GEOJSON": {
+					"type": "Feature",
+					"properties": {},
+					"geometry": {
+						"type": "Point",
+						"coordinates": [
+							118.43943137653523,
+							31.358536655799266
+						]
+					}
+				}
+			},
+			{
+				"id": "nantong",
+				"名称": "南通-公司类型占比",
+				"创业": 0,
+				"非盈利": 0,
+				"民营": 69,
+				"上市": 0,
+				"事业": 19,
+				"合资": 0,
+				"国企": 0,
+				"外资": 0,
+				"政府": 0,
+				"GEOJSON": {
+					"type": "Feature",
+					"properties": {},
+					"geometry": {
+						"type": "Point",
+						"coordinates": [
+							120.90159173866185,
+							31.98654943120089
+						]
+					}
+				}
+			}
+			]
+			window.echartMapPoints = [];
+			window.echartInitLists = [];
+			// 遍历数组
+			data.forEach(item => {
+				/**
+				 * 动态生成html元素 */
+				const htmlDivElement = document.createElement("div");
+				htmlDivElement.style = "height:100px;width:100px;";
+				const geojson = item.GEOJSON;
+				// 使用mapboxgl.Marker 根据经纬度将html元素加载至浏览器指定位置
+				window.echartMapPoints.push(new mapboxgl.Marker(htmlDivElement, {
+					//offset: [-50 / 2, -50 / 2]
+				})
+					.setLngLat([
+						geojson.geometry.coordinates[0],
+						geojson.geometry.coordinates[1]
+					])
+					.addTo(window.map));
+				// 遍历数据，生成每一个饼图
+				const d = Object.keys(item).filter(curr => typeof item[curr] === 'number').map(current => ({
+					name: current,
+					value: item[current]
+				}))
+				const option1 = {
+					color: ['#aaaaff', '#00ff00', '#c23531', '#d1ff66', '#0055ff', '#00aaff', '#aa5500', '#7068cb', '#55aa7f'],
+					tooltip: {
+						trigger: 'item',
+						formatter: '{a} <br/>{b} : {c} ({d}%)'
+					},
+					series: {
+						name: item.名称,
+						type: "pie",
+						data: d,
+						radius: '28px',
+						avoidLabelOverlap: false,
+						label: {
+							normal: {
+								show: false,
+								position: 'center'
+							},
+							emphasis: {
+								show: true,
+								textStyle: {
+									fontSize: '12',
+									fontWeight: 'bold'
+								}
+							}
+						}
+					}
+				};
+				window.echartInitLists.push(initEchart(htmlDivElement, option1));
+			})
+
+		}
+
+		//清除echart及marker
+		function clearEchartInstantAndPoint() {
+			window.echartInitLists.forEach(echartItem => {
+				echartItem.dispose();
+			});
+			window.echartMapPoints.forEach(pointItem => {
+				pointItem.remove();
+			});
+		}
+
+	</script>
+
+</body>
+
+</html>
